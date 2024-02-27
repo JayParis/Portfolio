@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jayparis.com</title>
+
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
+
+    <script src='./scripts/engine.js'></script>
+    <script src="./scripts/assets-lib.js"></script>
+</head>
+<body>
+    <div id="splash">
+        <div class="splash-logo-container">
+            <svg
+            viewBox="0 0 67.733332 67.733333"
+            version="1.1"
+            id="svg1"
+            xml:space="preserve"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:svg="http://www.w3.org/2000/svg"><defs
+                id="defs1" /><g
+                id="layer1"><path
+                style="fill:#000000"
+                d="m 33.584669,54.305726 c -0.01674,-4.769327 0.161877,-4.842714 -0.19767,-3.507474 -0.876621,3.255467 -3.030423,5.570045 -6.075789,7.075146 -1.94608,0.961805 -3.792018,1.02868 -4.807906,0.996391 -1.329387,-0.04225 -2.920873,-0.06112 -4.570728,-0.842693 -6.724405,-3.18549 -8.6055311,-11.285735 -3.986111,-17.164443 1.481856,-1.885821 4.572546,-3.532557 7.365809,-3.924543 l 1.07165,-0.150387 0.291082,1.699324 c 0.636949,3.718479 2.758801,6.626662 5.986878,8.205537 1.139773,0.55747 2.505005,0.996315 3.418843,1.098964 l 1.521355,0.170889 V 35.093718 22.224999 H 22.318817 11.035552 l 0.144139,-2.579688 c 0.0848,-1.517748 0.337135,-3.069812 0.612969,-3.770312 1.168252,-2.966851 3.502101,-5.192327 6.376089,-6.0800118 1.666113,-0.5146099 2.416336,-0.534571 20.091411,-0.534571 h 18.36067 v 1.5513868 c 0,4.98684 -2.073387,8.573368 -6.032311,10.43464 -1.740608,0.81834 -1.864452,0.836403 -6.79998,0.991807 -2.764895,0.08706 -4.805624,0.179223 -4.534952,0.20481 0.963795,0.09111 3.627296,1.727082 4.691503,2.881611 0.594816,0.645299 1.398239,1.848968 1.785383,2.67482 0,0 0.289576,0.889455 0.477874,2.082759 0.188297,1.193305 0.308556,9.869831 0.308556,9.869831 0.09384,11.883665 0.0046,12.626837 -1.823456,15.179647 -1.954005,2.728735 -4.977445,4.134936 -8.89043,4.134936 h -2.200936 z"
+                id="path1" /></g>
+            </svg>
+        </div>
+    </div>
+    <canvas id='application'></canvas>
+    <script>
+        // create a PlayCanvas application
+        const canvas = document.getElementById('application');
+        canvas.style['-webkit-user-select'] = 'none';
+        const app = new pc.Application(canvas, {
+            elementInput: new pc.ElementInput(canvas),
+            mouse: new pc.Mouse(canvas),
+            touch: !!('ontouchstart' in window) ? new pc.TouchDevice(canvas) : null,
+            keyboard: new pc.Keyboard(window),
+        });
+
+        var device = pc.Application.getApplication().graphicsDevice;
+        device.maxPixelRatio = window.devicePixelRatio;
+
+        app.setCanvasFillMode(pc.FILLMODE_FILL_WINDOW);
+        app.setCanvasResolution(pc.RESOLUTION_AUTO);
+
+        // ensure canvas is resized when window changes size
+        window.addEventListener('resize', () => app.resizeCanvas());
+
+        const assetListLoader = new pc.AssetListLoader(
+            Object.values(assets),
+            app.assets
+        );
+        assetListLoader.load(() => {
+
+            app.root.addComponent('script');
+            app.root.script.create("Main-Scene-Script");
+
+            app.start();
+
+            document.getElementById('splash').style.display = 'none';
+        });
+
+        const camera = new pc.Entity('camera');
+        camera.addComponent('camera', {
+            fov: 60,
+            orthoHeight: 10,
+            projection: pc.PROJECTION_ORTHOGRAPHIC,
+            clearColor: new pc.Color(.1, .1, .1) //0.1, 0.1, 0.01
+        });
+        app.root.addChild(camera);
+        camera.setPosition(0, 0, 10);
+
+        const screen = new pc.Entity();
+        screen.addComponent("screen", {
+            referenceResolution: new pc.Vec2(1280, 720), //1280, 720
+            // scaleBlend: 0.5,
+            scaleMode: pc.SCALEMODE_NONE,
+            screenSpace: true,
+        });
+        app.root.addChild(screen);
+        //---
+    </script>
+</body>
+</html>
